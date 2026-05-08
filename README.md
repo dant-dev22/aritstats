@@ -183,3 +183,94 @@ Recomendado además:
 
 - Servir detrás de un reverse proxy (nginx o Caddy) para HTTPS y compresión.
 - Correr el proceso bajo `systemd` para reinicio automático.
+
+### Dejar la API corriendo en segundo plano (recomendado: systemd)
+
+`systemd` es la forma más segura de mantener la API viva en un VPS, reiniciarla si cae y arrancarla automáticamente al reiniciar el servidor.
+
+1. Crea una carpeta de despliegue (ejemplo: `/opt/aritstats`) y deja ahí el proyecto:
+
+```bash
+sudo mkdir -p /opt/aritstats
+sudo chown -R $USER:$USER /opt/aritstats
+cd /opt/aritstats
+git clone <url-del-repo> .
+```
+
+2. Crea el entorno virtual e instala dependencias:
+
+```bash
+python3 -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
+cp .env.example .env
+```
+
+3. Configura `.env` con tus credenciales reales (Spotify/MySQL).
+
+4. Crea el archivo del servicio:
+
+```bash
+sudo nano /etc/systemd/system/aritstats.service
+```
+
+Contenido (ajusta `User`, `Group` y rutas si corresponde):
+
+```ini
+[Unit]
+Description=AristStats FastAPI service
+After=network.target
+
+[Service]
+User=www-data
+Group=www-data
+WorkingDirectory=/opt/aritstats
+EnvironmentFile=/opt/aritstats/.env
+ExecStart=/opt/aritstats/.venv/bin/uvicorn app.main:app --host 127.0.0.1 --port 8000 --workers 4
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target
+```
+
+5. Activa y levanta el servicio:
+
+```bash
+sudo systemctl daemon-reload
+sudo systemctl enable aritstats
+sudo systemctl start aritstats
+```
+
+6. Verifica estado y logs:
+
+```bash
+sudo systemctl status aritstats
+sudo journalctl -u aritstats -f
+```
+
+Comandos utiles:
+
+```bash
+sudo systemctl restart aritstats
+sudo systemctl stop aritstats
+sudo systemctl start aritstats
+```
+
+> Si usas nginx como proxy reverso, apunta `location /api/` a `http://127.0.0.1:8000`.
+
+### Opción rápida (menos robusta): `nohup`
+
+Si solo quieres dejarlo corriendo temporalmente en segundo plano:
+
+```bash
+nohup ./.venv/bin/uvicorn app.main:app --host 0.0.0.0 --port 8000 --workers 2 > aritstats.log 2>&1 &
+```
+
+Luego puedes validar con:
+
+```bash
+ps aux | rg uvicorn
+```
+
+Esta opción **no** reinicia el proceso automáticamente si el servidor se reinicia o si la app se cae, por eso `systemd` sigue siendo la recomendada.
