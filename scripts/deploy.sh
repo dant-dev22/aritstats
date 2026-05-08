@@ -16,13 +16,13 @@ set -euo pipefail
 # Optional environment vars:
 #   APP_DIR=/srv/aritstats
 #   SERVICE_NAME=aritstats
-#   BRANCH=main
+#   BRANCH=<auto>
 #   VENV_PATH=.venv
 #   SEED_SQL_PATH=sql/todo_aritmetrica.sql
 
 APP_DIR="${APP_DIR:-/srv/aritstats}"
 SERVICE_NAME="${SERVICE_NAME:-aritstats}"
-BRANCH="${BRANCH:-main}"
+BRANCH="${BRANCH:-}"
 VENV_PATH="${VENV_PATH:-.venv}"
 SEED_SQL_PATH="${SEED_SQL_PATH:-sql/todo_aritmetrica.sql}"
 RUN_SEED="false"
@@ -52,11 +52,21 @@ while [[ $# -gt 0 ]]; do
   esac
 done
 
-echo "==> Deploying ${APP_DIR} (branch: ${BRANCH}, service: ${SERVICE_NAME})"
+echo "==> Deploying ${APP_DIR} (service: ${SERVICE_NAME})"
 cd "${APP_DIR}"
 
 echo "==> Fetching latest changes"
 git fetch --all --prune
+
+if [[ -z "${BRANCH}" ]]; then
+  if git symbolic-ref -q --short refs/remotes/origin/HEAD >/dev/null 2>&1; then
+    BRANCH="$(git symbolic-ref -q --short refs/remotes/origin/HEAD | sed 's|^origin/||')"
+  else
+    BRANCH="$(git rev-parse --abbrev-ref HEAD)"
+  fi
+fi
+
+echo "==> Using branch: ${BRANCH}"
 git checkout "${BRANCH}"
 git pull --ff-only origin "${BRANCH}"
 
