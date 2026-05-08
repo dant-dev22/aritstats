@@ -3,7 +3,12 @@
     "allow": [
       "Bash(git ls-tree *)",
       "Bash(git log *)",
-      "Bash(python -c \"import ast; [ast.parse\\(open\\(f\\).read\\(\\)\\) for f in ['app/main.py','app/config.py']]; print\\('OK'\\)\")"
+      "Bash(python -c \"import ast; [ast.parse\\(open\\(f\\).read\\(\\)\\) for f in ['app/main.py','app/config.py']]; print\\('OK'\\)\")",
+      "Bash(npx create-expo-app@latest . --template blank)",
+      "Bash(npm run *)",
+      "Bash(npx expo *)",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" http://localhost:8081/)",
+      "mcp__Claude_in_Chrome__tabs_context_mcp"
     ]
   }
 }
