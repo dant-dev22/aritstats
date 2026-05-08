@@ -2,7 +2,8 @@
   "permissions": {
     "allow": [
       "Bash(git ls-tree *)",
-      "Bash(git log *)"
+      "Bash(git log *)",
+      "Bash(python -c \"import ast; [ast.parse\\(open\\(f\\).read\\(\\)\\) for f in ['app/main.py','app/config.py']]; print\\('OK'\\)\")"
     ]
   }
 }

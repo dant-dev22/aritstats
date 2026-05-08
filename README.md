@@ -102,8 +102,10 @@ uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
 
 Una vez levantado el servidor, accede a:
 
-- Swagger UI: [http://127.0.0.1:8000/docs](http://127.0.0.1:8000/docs)
-- ReDoc: [http://127.0.0.1:8000/redoc](http://127.0.0.1:8000/redoc)
+- Swagger UI: [http://127.0.0.1:8000/api/docs](http://127.0.0.1:8000/api/docs)
+- ReDoc: [http://127.0.0.1:8000/api/redoc](http://127.0.0.1:8000/api/redoc)
+
+> Todas las rutas viven bajo el prefijo `/api` porque en producción nginx proxea `aritmetrica.lat/api/*` hacia la app FastAPI (el resto del dominio queda libre para el frontend).
 
 ---
 
@@ -113,21 +115,25 @@ Una vez levantado el servidor, accede a:
 
 | Método | Ruta | Descripción |
 |--------|------|-------------|
-| GET | `/` | Health check de la API |
+| GET | `/api/` | Health check de la API |
 
 ### Spotify
 
 | Método | Ruta | Descripción |
 |--------|------|-------------|
-| GET | `/spotify/credentials` | Retorna `client_id` y `client_secret` configurados |
-| GET | `/spotify/artists` | Lista todos los artistas con sus IDs de Spotify |
-| GET | `/spotify/artist/{artist_id}/listeners` | Oyentes mensuales de un artista (scraping) |
+| GET | `/api/spotify/credentials` | Retorna `client_id` y `client_secret` configurados |
+| GET | `/api/spotify/artists` | Lista todos los artistas con sus IDs de Spotify |
+| GET | `/api/spotify/artist/{artist_id}/listeners` | Oyentes mensuales de un artista (scraping) |
 
 ### YouTube
 
 | Método | Ruta | Descripción |
 |--------|------|-------------|
-| GET | `/youtube/artists` | Lista todos los artistas con sus IDs de canal de YouTube |
+| GET | `/api/youtube/artists` | Lista todos los artistas con sus IDs de canal de YouTube |
+
+### CORS
+
+La app configura CORS vía la variable `CORS_ORIGINS` (lista separada por comas en `.env`). Por defecto incluye `https://aritmetrica.lat`, `https://www.aritmetrica.lat`, `http://localhost:3000` y `http://127.0.0.1:3000`.
 
 ---
 
