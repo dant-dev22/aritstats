@@ -14,13 +14,13 @@ set -euo pipefail
 #   ./scripts/deploy.sh --service aritstats --with-seed
 #
 # Optional environment vars:
-#   APP_DIR=/opt/aritstats
+#   APP_DIR=/srv/aritstats
 #   SERVICE_NAME=aritstats
 #   BRANCH=main
 #   VENV_PATH=.venv
 #   SEED_SQL_PATH=sql/todo_aritmetrica.sql
 
-APP_DIR="${APP_DIR:-/opt/aritstats}"
+APP_DIR="${APP_DIR:-/srv/aritstats}"
 SERVICE_NAME="${SERVICE_NAME:-aritstats}"
 BRANCH="${BRANCH:-main}"
 VENV_PATH="${VENV_PATH:-.venv}"

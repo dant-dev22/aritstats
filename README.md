@@ -2,6 +2,11 @@
 
 API REST construida con FastAPI para consultar estadísticas de artistas de rap/hip-hop latinoamericano en Spotify y YouTube.
 
+## Scripts del proyecto
+
+- `scripts/deploy.sh`: actualiza el proyecto en el VPS y reinicia el servicio de `systemd`.
+- `scripts/generate_aritmetrica_sql.py`: regenera `sql/todo_aritmetrica.sql` a partir de `app/data/artist_ids.py`.
+
 ## Actualizar en VPS con script
 
 Este proyecto incluye `scripts/deploy.sh` para actualizar código en el VPS y reiniciar el servicio gestionado por `systemd`.
@@ -27,6 +32,10 @@ chmod +x scripts/deploy.sh
 ./scripts/deploy.sh --service aritstats
 ./scripts/deploy.sh --app-dir .
 ```
+
+- `--branch main`: cambia al branch `main` y hace pull de ese branch antes de reiniciar el servicio.
+- `--service aritstats`: reinicia ese nombre de servicio en `systemd` (si tu servicio tiene otro nombre, cámbialo aquí).
+- `--app-dir .`: indica en qué carpeta está el proyecto a desplegar (el punto significa "la carpeta actual").
 
 ### Nota sobre base de datos y seed
 
